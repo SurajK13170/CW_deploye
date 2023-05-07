@@ -4,7 +4,25 @@ const userRouter = express.Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
+userRouter.get('/', async (req, res) => {
+    try {
+      const users = await UserModel.find()
+      res.status(200).send(users)
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  })
 
+  userRouter.delete('/delete/:id' , async(req ,res)=>{
+    const {id} = req.params
+    try{
+        const user =await UserModel.findByIdAndDelete({_id:id})
+        res.status(200).json({'msg':'User Deleted'})
+    }catch(err){
+        res.status(404).json({err:err.message})
+    }
+  })
+  
 userRouter.post('/register', async(req , res)=>{
     const {name, age, email, pass, city} = req.body
     try{
